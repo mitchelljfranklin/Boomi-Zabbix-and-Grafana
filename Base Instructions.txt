@@ -1,0 +1,77 @@
+integrationreporting
+Adse334iiIF&*2
+
+
+
+sudo apt update
+sudo apt install mysql-server //follow prompts to install
+sudo mysql_secure_installation //follow prompts
+
+
+
+sudo wget https://repo.zabbix.com/zabbix/5.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_5.0-1+bionic_all.deb
+sudo dpkg -i zabbix-release_5.0-1+bionic_all.deb
+sudo apt update
+sudo apt install zabbix-server-mysql zabbix-frontend-php zabbix-apache-conf zabbix-agent zabbix-java-gateway
+
+
+sudo mysql -u root   //mysql -uroot -p
+
+create database zabbix character set utf8 collate utf8_bin;
+create user zabbix@localhost identified by 'dj4sns2r';
+grant all privileges on zabbix.* to zabbix@localhost;
+
+quit; 
+
+zcat /usr/share/doc/zabbix-server-mysql*/create.sql.gz | mysql -uzabbix -p zabbix //enter in password in create user
+//wait for confirmation of process
+
+sudo vi /etc/zabbix/zabbix_server.conf
+//Configure the database for Zabbix server
+//DBPassword=password 
+//line 304 for javapollers
+//JavaGateway=127.0.0.1  (290)
+
+sudo vi /etc/zabbix/zabbix_java_gateway.conf
+//change start pollers to START_POLLERS=5
+//LISTEN_IP="127.0.0.1"
+
+
+sudo vi /etc/zabbix/apache.conf  //Australia/Brisbane
+//Configure PHP for Zabbix frontend 
+php_value date.timezone Europe/Riga 
+
+sudo systemctl restart zabbix-server zabbix-agent apache2 zabbix-java-gateway
+
+sudo systemctl enable zabbix-server zabbix-agent apache2 zabbix-java-gateway
+
+
+http://192.168.1.11/zabbix/setup.php
+
+
+
+notes; need to change listener java config to IP and polling etc.
+
+
+
+
+
+
+sudo apt-get install -y adduser libfontconfig1
+wget https://dl.grafana.com/oss/release/grafana_7.1.1_amd64.deb
+sudo dpkg -i grafana_7.1.1_amd64.deb
+
+
+sudo systemctl daemon-reload
+sudo systemctl start grafana-server
+sudo systemctl status grafana-server
+
+sudo systemctl enable grafana-server.service
+
+
+
+
+
+
+
+---Change <queueName> in Key to Match the required Queue Name---
